@@ -26,7 +26,7 @@ const FEATURES = [
 
 export default function FeatureStrip() {
   return (
-    <section className="bg-cream">
+    <section className="bg-gold/10">
       <div className="mx-auto max-w-7xl px-6 lg:px-10 py-10">
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
           {FEATURES.map(({ icon: Icon, title, text }) => (

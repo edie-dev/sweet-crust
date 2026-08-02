@@ -1,10 +1,36 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import { getProductsByCategory } from "../data/products";
 import ProductCard from "../components/ui/ProductCard";
 import CategoryTabs from "../components/ui/CategoryTabs";
+import { MdOutlineBakeryDining } from "react-icons/md";
+
+const VALID_CATEGORIES = ["All", "Cakes", "Pastries", "Breads", "Cookies"];
 
 export default function Shop() {
-  const [activeCategory, setActiveCategory] = useState("All");
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  // Read ?category= from the URL on load, fall back to "All" if missing/invalid
+  const categoryFromUrl = searchParams.get("category");
+  const initialCategory = VALID_CATEGORIES.includes(categoryFromUrl)
+    ? categoryFromUrl
+    : "All";
+
+  const [activeCategory, setActiveCategory] = useState(initialCategory);
+
+  // Keep state in sync if the URL changes while already on the Shop page
+  // (e.g. clicking a different footer link without a full page reload)
+  useEffect(() => {
+    const urlCategory = searchParams.get("category");
+    if (VALID_CATEGORIES.includes(urlCategory) && urlCategory !== activeCategory) {
+      setActiveCategory(urlCategory);
+    }
+  }, [searchParams]);
+
+  const handleCategoryChange = (category) => {
+    setActiveCategory(category);
+    setSearchParams(category === "All" ? {} : { category });
+  };
 
   const filteredProducts = useMemo(
     () => getProductsByCategory(activeCategory),
@@ -16,8 +42,8 @@ export default function Shop() {
       <div className="mx-auto max-w-7xl px-6 lg:px-10 py-14 lg:py-20">
         {/* Heading */}
         <div className="text-center mb-8">
-          <h1 className="font-bold font-display text-4xl text-brown-900">
-           Our Shop
+          <h1 className="font-display text-4xl text-brown-900">
+            <MdOutlineBakeryDining className="inline-block text-5xl text-gold" />Our Shop
           </h1>
           <p className="font-body text-brown-900/70 mt-2">
             Explore our wide range of breads, pastries and cakes.
@@ -26,7 +52,7 @@ export default function Shop() {
 
         {/* Category filter */}
         <div className="mb-10">
-          <CategoryTabs active={activeCategory} onChange={setActiveCategory} />
+          <CategoryTabs active={activeCategory} onChange={handleCategoryChange} />
         </div>
 
         {/* Product grid */}

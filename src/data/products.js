@@ -4,7 +4,7 @@ export const products = [
     name: "Chocolate Cake",
     price: 12000,
     category: "Cakes",
-    image: "/images/products/chocolate-cake.jpg",
+    image: "/images/products/chocolate cake.jfif",
     bestSeller: true,
     description:
       "Rich chocolate sponge layered with smooth chocolate ganache. Perfect for any celebration.",
